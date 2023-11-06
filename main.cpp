@@ -49,6 +49,10 @@ public:
 	void pop_head();
 	void pop_tail();
 	void delete_node(T value);
+
+	DLinkedList<T>& sum(DLinkedList<T>& other);
+	DLinkedList<T>& multiply(DLinkedList<T>& other);
+
 };
 
 template<typename T>
@@ -339,6 +343,41 @@ void DLinkedList<T>::delete_node(T value) {
 }
 
 
+template <typename T>
+DLinkedList<T>& DLinkedList<T>::sum(DLinkedList<T>& other)
+{
+	DLinkedList<T>* sumList = new DLinkedList<T>;
+
+	Node<T>* node1 = _tail; 
+	Node<T>* node2 = other.get_tail();
+
+	T sum = 0;
+	T carry = 0;
+	while (node1 || node2)
+	{
+		if (node1)
+			sum += node1->data;
+		if (node2)
+			sum += node2->data;
+		sum += carry;
+
+		carry = 0;
+		sumList->push_head(sum % 10);
+		if (sum > 9)
+			carry = 1;
+		sum = 0;
+		node1 = node1->prev; node2 = node2->prev;
+	}
+	return *sumList;
+}
+
+
+
+
+
+
+
+
 int main() {
 	SetConsoleOutputCP(1251);
 
@@ -451,6 +490,34 @@ int main() {
 		std::cout << ptr->data << " ";
 	std::cout << std::endl;
 
+	DLinkedList<int> r;
+	r.push_head(4);
+	r.push_head(3);
+	r.push_head(2);
+	r.push_head(1);
 
+
+	DLinkedList<int> d;
+	d.push_head(4);
+	d.push_head(9);
+	d.push_head(9);
+	d.push_head(1);
+
+	std::cout << "Сложение двух чисел представленных в виде списков" << std::endl;
+	std::cout << "Первый список" << std::endl;
+	for (Node<int>* ptr = r.get_head(); ptr != nullptr; ptr = ptr->next)
+		std::cout << ptr->data;
+	std::cout << std::endl;
+	std::cout << "Второй список" << std::endl;
+	for (Node<int>* ptr = d.get_head(); ptr != nullptr; ptr = ptr->next)
+		std::cout << ptr->data;
+	std::cout << std::endl;
+	DLinkedList<int> c= r.sum(d);
+	std::cout << "Сумма" << std::endl;
+	for (Node<int>* ptr = c.get_head(); ptr != nullptr; ptr = ptr->next)
+		std::cout << ptr->data;
+	std::cout << std::endl;
+	std::cout << "Проверка 1234 + 1994=" << 1234 + 1994<< std::endl;
+	
 	return 0;
 }
