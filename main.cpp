@@ -371,6 +371,19 @@ DLinkedList<T>& DLinkedList<T>::sum(DLinkedList<T>& other)
 	return *sumList;
 }
 
+template <typename T>
+void print(DLinkedList<T> list) {
+	for (Node<T>* ptr = list.get_head(); ptr != nullptr; ptr = ptr->next)
+		std::cout << ptr->data << " ";
+	std::cout << std::endl;
+}
+
+template <typename T>
+void print_for_sum(DLinkedList<T> list) {
+	for (Node<T>* ptr = list.get_head(); ptr != nullptr; ptr = ptr->next)
+		std::cout << ptr->data;
+	std::cout << std::endl;
+}
 
 
 
@@ -391,13 +404,11 @@ int main() {
 	
 	std::cout << "Конструктор с рандомными значениями: ";
 	DLinkedList<int> ten = DLinkedList<int>(5);
-	for (Node<int>* ptr = ten.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl; 
+	print(ten);
 
 
 	
-	std::cout << "Проверка оператора = : ";
+	std::cout << "Проверка оператора =:";
 	DLinkedList<int> lst_second;
 	DLinkedList<int> lst_third;
 	lst_third.push_head(4);
@@ -406,89 +417,66 @@ int main() {
 	lst_third.push_head(1);
 
 	lst_second = lst_third;
-	for (Node<int>* ptr = lst_second.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst_second);
 
 	
-	std::cout << "Проверка конструктора копирования : ";
+	std::cout << "Проверка конструктора копирования: ";
 	DLinkedList<int> lst_four(lst_third);
-	for (Node<int>* ptr = lst_second.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst_four);
 	
+	std::cout << "Вставка в начало: " <<endl;
 	lst.push_head(4.0);
 	lst.push_head(5.0);
 	lst.push_head(2.0);
 	lst.push_head(8.0);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
+
+	std::cout << "Вставка в конец: " << endl;
 	wlst.push_tail(4.0);
 	wlst.push_tail(5.0);
 	wlst.push_tail(2.0);
 	wlst.push_tail(8.0);
-	for (Node<double>* ptr = wlst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(wlst);
 
 	std::cout <<"Оператор [ ]: "<< lst[1]->data << endl;
 
 	lst.insert(0, 9.0);
 	std::cout << "Вставка по индексу  в начало списка: " << endl;
 	std::cout << "Вывод измененного списка: ";
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Вставка по индексу в середину списка: " << endl;
 	lst.insert(2, 7.0);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Вставка по индексу в конец списка: " <<  endl;
 	lst.insert(6, 3.0);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Удаление по индексу"<< endl;
 	lst.remove(4);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Вставка списка в конец" << endl;
 	lst.push_tail(wlst);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Вставка списка в начало" << endl;
 	lst.push_head(wlst);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 	
 	std::cout << "Удаление первого элемента" << endl;
 	lst.pop_head();
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Удаление последнего элемента" << endl;
 	lst.pop_tail();
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	std::cout << "Удаление всех элементов с заданным значением" << endl;
 	lst.delete_node(2.0);
-	for (Node<double>* ptr = lst.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data << " ";
-	std::cout << std::endl;
+	print(lst);
 
 	DLinkedList<int> r;
 	r.push_head(4);
@@ -505,19 +493,13 @@ int main() {
 
 	std::cout << "Сложение двух чисел представленных в виде списков" << std::endl;
 	std::cout << "Первый список" << std::endl;
-	for (Node<int>* ptr = r.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data;
-	std::cout << std::endl;
+	print(r);
 	std::cout << "Второй список" << std::endl;
-	for (Node<int>* ptr = d.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data;
-	std::cout << std::endl;
+	print(d);
 	DLinkedList<int> c= r.sum(d);
 	std::cout << "Сумма" << std::endl;
-	for (Node<int>* ptr = c.get_head(); ptr != nullptr; ptr = ptr->next)
-		std::cout << ptr->data;
-	std::cout << std::endl;
-	std::cout << "Проверка 1234 + 1994=" << 1234 + 1994<< std::endl;
+	print_for_sum(c);
+	std::cout << "Проверка: 1234+1994=" << 1234 + 1994<< std::endl;
 	
 	return 0;
 }
