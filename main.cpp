@@ -51,7 +51,7 @@ public:
 	void delete_node(T value);
 
 	DLinkedList<T>& sum(DLinkedList<T>& other);
-	DLinkedList<T>& multiply(DLinkedList<T>& other);
+	T multiply(DLinkedList<T>& other);
 
 };
 
@@ -372,6 +372,31 @@ DLinkedList<T>& DLinkedList<T>::sum(DLinkedList<T>& other)
 }
 
 template <typename T>
+T DLinkedList<T>::multiply(DLinkedList<T>& other)
+{
+	Node<T>* first = _head;
+	Node<T>* second = other.get_head();
+	T N = 1000000007;
+	T num1 = 0, num2 = 0;
+	while (first || second) {
+
+		if (first) {
+			num1 = ((num1) * 10) % N + first->data;
+			first = first->next;
+		}
+
+		if (second)
+		{
+			num2 = ((num2) * 10) % N + second->data;
+			second = second->next;
+		}
+
+	}
+	return ((num1 % N) * (num2 % N)) % N;
+}
+
+
+template <typename T>
 void print(DLinkedList<T> list) {
 	for (Node<T>* ptr = list.get_head(); ptr != nullptr; ptr = ptr->next)
 		std::cout << ptr->data << " ";
@@ -500,6 +525,10 @@ int main() {
 	std::cout << "Сумма" << std::endl;
 	print_for_sum(c);
 	std::cout << "Проверка: 1234+1994=" << 1234 + 1994<< std::endl;
+	
+	std::cout << "Умножение двух чисел представленных в виде списков" << std::endl;
+	std::cout << r.multiply(d) << endl;;
+	std::cout << "Проверка: 1234*1994=" << 1234*1994 << std::endl;
 	
 	return 0;
 }
