@@ -27,14 +27,16 @@ public:
 	Node<T>* get_head() const;
 	Node<T>* get_tail() const;
 	int get_size() const;
+
 	DLinkedList();
 	DLinkedList(const DLinkedList<T>& other);
-	DLinkedList(int count);
+	DLinkedList(int count, const T& min, const T& max);
 	~DLinkedList();
 
 	DLinkedList<T> operator=(const DLinkedList<T>& other);
-	Node<T>* operator[](int index);
-	const Node<T>* operator[](int index) const;
+	T& operator[](int index);
+	const T& operator[](int index) const;
+	T& rewrite_data(int index,const T& value);
 	void clear();
 
 	Node<T>* get_data(int index);
@@ -50,9 +52,7 @@ public:
 	void pop_tail();
 	void delete_node(T value);
 
-	DLinkedList<T>& sum(DLinkedList<T>& other);
 	T multiply(DLinkedList<T>& other);
-
 };
 
 template<typename T>
@@ -100,21 +100,21 @@ Node<T>* DLinkedList<T>::push_tail(const T& value) {
 		last->next = tmp;
 		tmp->prev = last;
 	}
+	_tail = tmp;
 	return tmp;
 }
 
 template <typename T>
 Node<T>* DLinkedList<T>::push_head(const T& value) {
 	Node<T>* tmp = new Node<T>(value);
-	_tail = get_tail();
 	tmp->next = _head;
 	if (_head != nullptr) {
 		_head->prev = tmp;
 	}
 	if (_tail == nullptr) {
-		_tail == tmp;
+		_tail = _head=tmp;
 	}
-	_head = tmp;
+	_head =tmp;
 	++_size;
 
 	return tmp;
@@ -125,7 +125,7 @@ template <typename T>
 DLinkedList<T>::DLinkedList(const DLinkedList<T>& other) {
 	_head = _tail = nullptr;
 	_size = other.get_size();
-	Node<T>* new_head = other.get_head();
+	Node<T>* new_head = other._head;
 	while (new_head) {
 		push_tail(new_head->data);
 		new_head = new_head->next;
@@ -133,11 +133,12 @@ DLinkedList<T>::DLinkedList(const DLinkedList<T>& other) {
 }
 
 template <typename T>
-DLinkedList<T>::DLinkedList(int count) {
+DLinkedList<T>::DLinkedList(int count, const T& min, const T& max) {
+	srand(time(0));
 	_head = _tail =nullptr;
 	_size = count;
 	for (int i = 0; i < _size; ++i) {
-		T value = rand() % 100;
+		T value = rand() % (max-min+1)+min ;
 		push_tail(value);
 	}
 }
@@ -182,22 +183,16 @@ DLinkedList<T> DLinkedList<T>::operator=(const DLinkedList<T>& other) {
 
 
 template <typename T>
-Node<T>* DLinkedList<T>::operator[](int index) {
-	 return get_data(index);
+T& DLinkedList<T>::operator[](int index) {
+	 return get_data(index)->data;
 }
 
+
 template <typename T>
-const Node<T>* DLinkedList<T>::operator[](int index) const {
-	Node<T>* tmp = _head;
-	while (tmp) {
-		for (int i = 0; i <= index; ++i) {
-			tmp = tmp->next;
-			if (i == index) {
-				return tmp->data;
-			}
-		}
-	}
+const T& DLinkedList<T>::operator[](int index) const {
+	return get_data(index)->data;
 }
+
 
 template <typename T>
 Node<T>* DLinkedList<T>::get_data(int index) {
@@ -260,7 +255,7 @@ void DLinkedList<T>::remove(int index) {
 
 template <typename T>
 Node<T>* DLinkedList<T>::push_head(const DLinkedList<T>& other) {
-	Node<T>* tmp = other.get_tail();
+	Node<T>* tmp = other._tail;
 	while (tmp != nullptr) {
 		push_head(tmp->data);
 		tmp = tmp->prev;
@@ -270,7 +265,7 @@ Node<T>* DLinkedList<T>::push_head(const DLinkedList<T>& other) {
 
 template <typename T>
 Node<T>* DLinkedList<T>::push_tail(const DLinkedList<T>& other) {
-	Node<T>* tmp = other.get_head();
+	Node<T>* tmp = other._head;
 	while (tmp != nullptr) {
 		T r = tmp->data;
 		push_tail(r);
@@ -296,7 +291,7 @@ void DLinkedList<T>::pop_head() {
 
 template <typename T>
 void DLinkedList<T>::pop_tail() {
-	_tail = get_tail();
+	
 	if (_tail == nullptr)
 		return;
 	Node<T>* new_tail = _tail->prev;
@@ -342,13 +337,36 @@ void DLinkedList<T>::delete_node(T value) {
 	}
 }
 
+template <typename T>
+T DLinkedList<T>::multiply(DLinkedList<T>& other)
+{
+	Node<T>* first = _head;
+	Node<T>* second = other._head;
+	T N = 1000000000;
+	T num1 = 0, num2 = 0;
+	while (first || second) {
+
+		if (first) {
+			num1 = ((num1) * 10) % N + first->data;
+			first = first->next;
+		}
+
+		if (second)
+		{
+			num2 = ((num2) * 10) % N + second->data;
+			second = second->next;
+		}
+
+	}
+	return ((num1 % N) * (num2 % N)) % N;
+}
 
 template <typename T>
-DLinkedList<T>& DLinkedList<T>::sum(DLinkedList<T>& other)
+DLinkedList<T>& sum(DLinkedList<T>& first, DLinkedList<T>& other)
 {
 	DLinkedList<T>* sumList = new DLinkedList<T>;
 
-	Node<T>* node1 = _tail; 
+	Node<T>* node1 = first.get_tail(); 
 	Node<T>* node2 = other.get_tail();
 
 	T sum = 0;
@@ -371,29 +389,6 @@ DLinkedList<T>& DLinkedList<T>::sum(DLinkedList<T>& other)
 	return *sumList;
 }
 
-template <typename T>
-T DLinkedList<T>::multiply(DLinkedList<T>& other)
-{
-	Node<T>* first = _head;
-	Node<T>* second = other.get_head();
-	T N = 1000000007;
-	T num1 = 0, num2 = 0;
-	while (first || second) {
-
-		if (first) {
-			num1 = ((num1) * 10) % N + first->data;
-			first = first->next;
-		}
-
-		if (second)
-		{
-			num2 = ((num2) * 10) % N + second->data;
-			second = second->next;
-		}
-
-	}
-	return ((num1 % N) * (num2 % N)) % N;
-}
 
 
 template <typename T>
@@ -428,7 +423,7 @@ int main() {
 	std::cout << "get_size()" << lst.get_size() << endl;
 	
 	std::cout << "Конструктор с рандомными значениями: ";
-	DLinkedList<int> ten = DLinkedList<int>(5);
+	DLinkedList<int> ten = DLinkedList<int>(5, 10, 100);
 	print(ten);
 
 
@@ -464,7 +459,7 @@ int main() {
 	wlst.push_tail(8.0);
 	print(wlst);
 
-	std::cout <<"Оператор [ ]: "<< lst[1]->data << endl;
+	std::cout <<"Оператор [ ]: "<< lst[1] << endl;
 
 	lst.insert(0, 9.0);
 	std::cout << "Вставка по индексу  в начало списка: " << endl;
@@ -521,7 +516,7 @@ int main() {
 	print(r);
 	std::cout << "Второй список" << std::endl;
 	print(d);
-	DLinkedList<int> c= r.sum(d);
+	DLinkedList<int> c= sum(r,d);
 	std::cout << "Сумма" << std::endl;
 	print_for_sum(c);
 	std::cout << "Проверка: 1234+1994=" << 1234 + 1994<< std::endl;
@@ -530,5 +525,22 @@ int main() {
 	std::cout << r.multiply(d) << endl;;
 	std::cout << "Проверка: 1234*1994=" << 1234*1994 << std::endl;
 	
+	DLinkedList<int> t;
+	t.push_head(4);
+	t.push_head(3);
+	
+	DLinkedList<int> x;
+	x.push_head(4);
+	x.push_head(9);
+	x.push_head(9);
+	x.push_head(1);
+
+	std::cout<<x.multiply(t)<<endl;
+	std::cout << "Проверка: 34*1994=" << 34 * 1994 << std::endl;
+
+	int g = r[2] = 3;
+	std::cout << g;
+
+
 	return 0;
 }
